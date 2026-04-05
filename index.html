@@ -1,303 +1,681 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-<title>Electro App</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ley de Ohm Interactiva</title>
 
-<style>
-body{
-    margin:0;
-    font-family:'Segoe UI', sans-serif;
-    background: radial-gradient(circle at 20% 30%, #6366f1, transparent 40%),
-                radial-gradient(circle at 80% 70%, #ec4899, transparent 40%),
-                linear-gradient(135deg,#0f172a,#1e293b);
-    color:white;
-    overflow-x:hidden;
-}
+  <style>
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
 
-/* EFECTOS DE LUZ */
-.glow{
-    position:absolute;
-    width:300px;
-    height:300px;
-    background: radial-gradient(circle, rgba(255,255,255,0.2), transparent 70%);
-    filter: blur(60px);
-    z-index:0;
-}
+    body{
+      font-family:'Segoe UI', sans-serif;
+      color:white;
+      min-height:100vh;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(59,130,246,0.15), transparent 25%),
+        radial-gradient(circle at 80% 30%, rgba(168,85,247,0.18), transparent 25%),
+        radial-gradient(circle at 30% 80%, rgba(34,197,94,0.12), transparent 20%),
+        linear-gradient(180deg, #07111f, #0b1220 60%, #101827);
+      overflow-x:hidden;
+      position:relative;
+    }
 
-.glow1{ top:50px; left:50px; }
-.glow2{ bottom:50px; right:50px; }
+    /* fondo tipo circuito */
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background-image:
+        linear-gradient(rgba(34,211,238,0.08) 2px, transparent 2px),
+        linear-gradient(90deg, rgba(34,211,238,0.08) 2px, transparent 2px),
+        linear-gradient(rgba(59,130,246,0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,0.12) 1px, transparent 1px);
+      background-size: 140px 140px, 140px 140px, 28px 28px, 28px 28px;
+      mask-image: radial-gradient(circle at center, black 55%, transparent 95%);
+      pointer-events:none;
+    }
 
-header{
-    text-align:center;
-    padding:20px;
-    font-size:24px;
-    font-weight:bold;
-    position:relative;
-    z-index:1;
-}
+    .lineas-circuito{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.18;
+    }
 
-.container{
-    max-width:1000px;
-    margin:auto;
-    padding:20px;
-    position:relative;
-    z-index:1;
-}
+    .lineas-circuito span{
+      position:absolute;
+      background:linear-gradient(90deg, transparent, #38bdf8, transparent);
+      box-shadow:0 0 12px rgba(56,189,248,.45);
+    }
 
-.tabs{
-    display:flex;
-    justify-content:center;
-    gap:10px;
-    margin-bottom:20px;
-}
+    .lineas-circuito .h1{ top:90px; left:0; width:240px; height:2px; }
+    .lineas-circuito .h2{ top:190px; right:0; width:280px; height:2px; }
+    .lineas-circuito .h3{ bottom:140px; left:0; width:300px; height:2px; }
+    .lineas-circuito .h4{ bottom:90px; right:0; width:220px; height:2px; }
 
-.tab{
-    padding:10px 20px;
-    border-radius:20px;
-    background:rgba(255,255,255,0.1);
-    backdrop-filter: blur(10px);
-    cursor:pointer;
-}
+    .lineas-circuito .v1{ top:0; left:120px; width:2px; height:210px; background:linear-gradient(180deg, transparent, #a78bfa, transparent); }
+    .lineas-circuito .v2{ top:0; right:150px; width:2px; height:180px; background:linear-gradient(180deg, transparent, #22d3ee, transparent); }
+    .lineas-circuito .v3{ bottom:0; left:220px; width:2px; height:180px; background:linear-gradient(180deg, transparent, #22c55e, transparent); }
+    .lineas-circuito .v4{ bottom:0; right:260px; width:2px; height:220px; background:linear-gradient(180deg, transparent, #f472b6, transparent); }
 
-.tab.active{
-    background:white;
-    color:black;
-}
+    .wrapper{
+      width:min(1100px, 92%);
+      margin:0 auto;
+      padding:34px 0 60px;
+      position:relative;
+      z-index:2;
+    }
 
-.section{
-    display:none;
-}
+    h1{
+      text-align:center;
+      font-size:clamp(34px, 5vw, 52px);
+      font-weight:800;
+      margin-bottom:14px;
+      letter-spacing:.5px;
+    }
 
-.section.active{
-    display:block;
-}
+    .concepto{
+      max-width:860px;
+      margin:0 auto 26px;
+      text-align:center;
+      line-height:1.8;
+      color:#cbd5e1;
+      font-size:17px;
+      padding:0 10px;
+    }
 
-/* LAYOUT */
-.row{
-    display:flex;
-    gap:20px;
-    flex-wrap:wrap;
-}
+    .concepto b{
+      color:#fff;
+    }
 
-/* INFO GLASS */
-.left{
-    flex:1;
-    min-width:250px;
-    background:rgba(255,255,255,0.08);
-    backdrop-filter: blur(20px);
-    padding:20px;
-    border-radius:20px;
-    border:1px solid rgba(255,255,255,0.1);
-}
+    .triangulo{
+      text-align:center;
+      margin:22px 0 34px;
+    }
 
-/* CALCULADORA BLANCA */
-.right{
-    flex:1;
-    min-width:280px;
-    background:white;
-    color:black;
-    padding:20px;
-    border-radius:20px;
-    box-shadow:0 10px 40px rgba(0,0,0,0.6);
-}
+    .triangulo img{
+      width:min(360px, 90%);
+      filter:drop-shadow(0 10px 18px rgba(0,0,0,.35));
+    }
 
-/* INPUTS */
-input,select{
-    width:100%;
-    padding:12px;
-    margin-top:10px;
-    border-radius:10px;
-    border:none;
-    background:#f1f5f9;
-}
+    .main{
+      display:grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap:28px;
+      align-items:start;
+    }
 
-/* BOTÓN */
-button{
-    width:100%;
-    padding:12px;
-    margin-top:10px;
-    border:none;
-    border-radius:12px;
-    background:linear-gradient(135deg,#ff7a18,#ffb347);
-    color:white;
-    font-weight:bold;
-    cursor:pointer;
-    transition:0.3s;
-}
+    .panel, .circuito-panel{
+      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:28px;
+      backdrop-filter: blur(12px);
+      box-shadow:0 18px 40px rgba(0,0,0,.28);
+    }
 
-button:hover{
-    transform:scale(1.05);
-}
+    .panel{
+      padding:26px 22px 24px;
+    }
 
-/* RESULTADO */
-.result{
-    margin-top:10px;
-    padding:12px;
-    border-radius:10px;
-    background:#e0f2fe;
-    text-align:center;
-    font-weight:bold;
-}
+    .panel h2,
+    .circuito-panel h2{
+      font-size:26px;
+      margin-bottom:18px;
+      text-align:center;
+    }
 
-/* PASOS */
-.step{
-    background:#f8fafc;
-    padding:10px;
-    border-radius:8px;
-    margin-top:6px;
-    font-size:14px;
-}
+    .sub{
+      text-align:center;
+      color:#cbd5e1;
+      font-size:15px;
+      margin-bottom:18px;
+    }
 
-.step b{
-    color:#6366f1;
-}
-</style>
+    .controls{
+      display:grid;
+      gap:14px;
+    }
 
+    .fila{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap:12px;
+    }
+
+    select, input{
+      width:100%;
+      border:none;
+      outline:none;
+      border-radius:16px;
+      padding:15px 16px;
+      background:#162235;
+      color:white;
+      font-size:15px;
+      transition:.2s ease;
+    }
+
+    select:focus, input:focus{
+      background:#1b2b42;
+      box-shadow:0 0 0 2px rgba(56,189,248,.35);
+    }
+
+    input::placeholder{
+      color:#94a3b8;
+    }
+
+    button{
+      border:none;
+      border-radius:16px;
+      padding:15px 20px;
+      background:linear-gradient(135deg, #2563eb, #06b6d4);
+      color:white;
+      font-weight:800;
+      font-size:15px;
+      cursor:pointer;
+      transition:.25s ease;
+      margin-top:6px;
+    }
+
+    button:hover{
+      transform:translateY(-2px);
+      box-shadow:0 12px 24px rgba(37,99,235,.28);
+    }
+
+    .error{
+      min-height:24px;
+      text-align:center;
+      color:#fda4af;
+      font-weight:700;
+      margin-top:12px;
+    }
+
+    .resultado{
+      min-height:38px;
+      margin-top:10px;
+      text-align:center;
+      font-size:30px;
+      font-weight:800;
+      color:#ffffff;
+    }
+
+    .pasos{
+      margin-top:16px;
+      padding:16px;
+      border-radius:20px;
+      background:rgba(255,255,255,0.05);
+    }
+
+    .step{
+      font-size:18px;
+      line-height:1.8;
+      color:#e2e8f0;
+      text-align:center;
+    }
+
+    .step + .step{
+      margin-top:6px;
+    }
+
+    .circuito-panel{
+      padding:22px;
+    }
+
+    .circuito-box{
+      position:relative;
+      height:470px;
+      border-radius:24px;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(56,189,248,.15), transparent 30%),
+        radial-gradient(circle at 80% 80%, rgba(168,85,247,.18), transparent 30%),
+        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      overflow:hidden;
+    }
+
+    .wire{
+      position:absolute;
+      background:#94a3b8;
+      box-shadow:0 0 10px rgba(148,163,184,.25);
+    }
+
+    .wire.h{ height:6px; border-radius:999px; }
+    .wire.v{ width:6px; border-radius:999px; }
+
+    .nodo{
+      position:absolute;
+      width:16px;
+      height:16px;
+      border-radius:50%;
+      background:#e2e8f0;
+      box-shadow:0 0 14px rgba(255,255,255,.35);
+    }
+
+    .resistor{
+      position:absolute;
+      width:150px;
+      height:56px;
+      left:50%;
+      top:106px;
+      transform:translateX(-50%);
+      background:#f8fafc;
+      color:#111827;
+      border-radius:14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:800;
+      box-shadow:0 10px 20px rgba(0,0,0,.25);
+      border:3px solid #cbd5e1;
+      z-index:2;
+    }
+
+    .battery{
+      position:absolute;
+      left:100px;
+      top:180px;
+      width:72px;
+      height:118px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .battery .long{
+      position:absolute;
+      width:8px;
+      height:86px;
+      background:#f8fafc;
+      left:20px;
+      border-radius:8px;
+    }
+
+    .battery .short{
+      position:absolute;
+      width:8px;
+      height:52px;
+      background:#f8fafc;
+      left:42px;
+      border-radius:8px;
+    }
+
+    .battery .plus{
+      position:absolute;
+      top:-8px;
+      left:10px;
+      font-weight:800;
+      font-size:18px;
+    }
+
+    .battery .minus{
+      position:absolute;
+      bottom:-8px;
+      left:41px;
+      font-weight:800;
+      font-size:18px;
+    }
+
+    .amperimetro{
+      position:absolute;
+      right:96px;
+      top:218px;
+      width:92px;
+      height:92px;
+      border-radius:50%;
+      border:4px solid #e2e8f0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:800;
+      font-size:28px;
+      color:#fff;
+      background:rgba(255,255,255,.06);
+    }
+
+    .tag{
+      position:absolute;
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:14px;
+      font-weight:700;
+      background:rgba(255,255,255,.09);
+      border:1px solid rgba(255,255,255,.08);
+      color:#fff;
+      backdrop-filter: blur(6px);
+    }
+
+    .tag.v{ left:72px; top:320px; }
+    .tag.r{ left:50%; top:36px; transform:translateX(-50%); }
+    .tag.i{ right:78px; top:322px; }
+
+    .mini-ayuda{
+      margin-top:18px;
+      text-align:center;
+      color:#cbd5e1;
+      font-size:14px;
+      line-height:1.7;
+    }
+
+    @media (max-width: 900px){
+      .main{
+        grid-template-columns: 1fr;
+      }
+
+      .circuito-box{
+        height:420px;
+      }
+    }
+
+    @media (max-width: 560px){
+      .fila{
+        grid-template-columns: 1fr;
+      }
+
+      .circuito-box{
+        height:360px;
+      }
+
+      .resistor{
+        width:120px;
+        height:48px;
+        top:92px;
+      }
+
+      .battery{
+        left:48px;
+        top:160px;
+        transform:scale(.9);
+      }
+
+      .amperimetro{
+        right:44px;
+        top:210px;
+        width:78px;
+        height:78px;
+        font-size:24px;
+      }
+
+      .tag.v{ left:26px; top:298px; }
+      .tag.i{ right:18px; top:298px; }
+      .tag.r{ top:28px; }
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="glow glow1"></div>
-<div class="glow glow2"></div>
+  <div class="lineas-circuito">
+    <span class="h1"></span>
+    <span class="h2"></span>
+    <span class="h3"></span>
+    <span class="h4"></span>
+    <span class="v1"></span>
+    <span class="v2"></span>
+    <span class="v3"></span>
+    <span class="v4"></span>
+  </div>
 
-<header>⚡ Electro App</header>
+  <div class="wrapper">
+    <h1>⚡ Ley de Ohm</h1>
 
-<div class="container">
+    <div class="concepto">
+      La Ley de Ohm relaciona el <b>voltaje (V)</b>, la <b>corriente (I)</b> y la <b>resistencia (R)</b>.
+      Si conoces dos valores, puedes hallar el tercero con estas ecuaciones:
+      <br><br>
+      <b>V = I × R</b><br>
+      <b>I = V / R</b><br>
+      <b>R = V / I</b>
+      <br><br>
+      Fue formulada por Georg Simon Ohm.
+    </div>
 
-<div class="tabs">
-<div class="tab active" onclick="mostrar('ohm')">Ley de Ohm</div>
-<div class="tab" onclick="mostrar('res')">Resistencias</div>
-</div>
+    <div class="triangulo">
+      <img src="https://i.imgur.com/QXdENWf.png" alt="Triángulo de la Ley de Ohm">
+    </div>
 
-<!-- OHM -->
-<div id="ohm" class="section active">
+    <div class="main">
+      <div class="panel">
+        <h2>Calculadora interactiva</h2>
+        <div class="sub">Elige qué quieres hallar. Solo aparecerán los datos necesarios.</div>
 
-<div class="row">
+        <div class="controls">
+          <select id="tipo" onchange="actualizarInputs()">
+            <option value="R">Calcular Resistencia (R)</option>
+            <option value="I">Calcular Corriente (I)</option>
+            <option value="V">Calcular Voltaje (V)</option>
+          </select>
 
-<div class="left">
-<h3>¿Qué es?</h3>
-<p>La Ley de Ohm relaciona voltaje, corriente y resistencia.</p>
+          <div class="fila">
+            <input id="v" type="number" step="any" placeholder="Voltaje (V)" oninput="actualizarCircuito()">
+            <input id="i" type="number" step="any" placeholder="Corriente (I)" oninput="actualizarCircuito()">
+            <input id="r" type="number" step="any" placeholder="Resistencia (R)" oninput="actualizarCircuito()">
+          </div>
 
-<h3>¿Para qué sirve?</h3>
-<p>Permite analizar circuitos eléctricos.</p>
+          <button onclick="calcOhm()">Calcular</button>
+        </div>
 
-<h3>Autor</h3>
-<p>:contentReference[oaicite:0]{index=0}</p>
-</div>
+        <div id="mensajeError" class="error"></div>
+        <div id="resOhm" class="resultado"></div>
 
-<div class="right">
+        <div id="stepsOhm" class="pasos">
+          <div class="step">Aquí aparecerá el desarrollo.</div>
+        </div>
+      </div>
 
-<select id="tipo">
-<option value="I">Corriente</option>
-<option value="V">Voltaje</option>
-<option value="R">Resistencia</option>
-</select>
+      <div class="circuito-panel">
+        <h2>Circuito visual</h2>
 
-<input id="v" placeholder="Voltaje">
-<input id="i" placeholder="Corriente">
-<input id="r" placeholder="Resistencia">
+        <div class="circuito-box">
+          <!-- cables -->
+          <div class="wire h" style="left:110px; top:128px; width:255px;"></div>
+          <div class="wire h" style="left:505px; top:128px; width:120px;"></div>
 
-<button onclick="calcOhm()">Calcular</button>
+          <div class="wire v" style="left:107px; top:128px; height:160px;"></div>
+          <div class="wire h" style="left:107px; top:286px; width:520px;"></div>
+          <div class="wire v" style="left:624px; top:128px; height:160px;"></div>
 
-<div id="resOhm" class="result"></div>
-<div id="stepsOhm"></div>
+          <!-- nodos -->
+          <div class="nodo" style="left:101px; top:123px;"></div>
+          <div class="nodo" style="left:619px; top:123px;"></div>
+          <div class="nodo" style="left:101px; top:281px;"></div>
+          <div class="nodo" style="left:619px; top:281px;"></div>
 
-</div>
+          <!-- resistor -->
+          <div class="resistor" id="resistorBox">R = ? Ω</div>
 
-</div>
+          <!-- batería -->
+          <div class="battery">
+            <div class="long"></div>
+            <div class="short"></div>
+            <div class="plus">+</div>
+            <div class="minus">−</div>
+          </div>
 
-</div>
+          <!-- amperímetro -->
+          <div class="amperimetro">A</div>
 
-<!-- RESISTENCIAS -->
-<div id="res" class="section">
+          <!-- etiquetas -->
+          <div class="tag r" id="tagR">R = ? Ω</div>
+          <div class="tag v" id="tagV">V = ?</div>
+          <div class="tag i" id="tagI">I = ?</div>
+        </div>
 
-<div class="right">
+        <div class="mini-ayuda">
+          El circuito cambia con tus datos.  
+          Si vas a hallar <b>R</b>, solo ingresas <b>V</b> e <b>I</b>.  
+          Si vas a hallar <b>I</b>, solo ingresas <b>V</b> y <b>R</b>.  
+          Si vas a hallar <b>V</b>, solo ingresas <b>I</b> y <b>R</b>.
+        </div>
+      </div>
+    </div>
+  </div>
 
-<select id="tipoR">
-<option value="serie">Serie</option>
-<option value="paralelo">Paralelo</option>
-</select>
+  <script>
+    const tipo = document.getElementById("tipo");
+    const v = document.getElementById("v");
+    const i = document.getElementById("i");
+    const r = document.getElementById("r");
 
-<input id="r1" placeholder="R1">
-<input id="r2" placeholder="R2">
+    const resOhm = document.getElementById("resOhm");
+    const stepsOhm = document.getElementById("stepsOhm");
+    const mensajeError = document.getElementById("mensajeError");
 
-<button onclick="calcRes()">Calcular</button>
+    const tagV = document.getElementById("tagV");
+    const tagI = document.getElementById("tagI");
+    const tagR = document.getElementById("tagR");
+    const resistorBox = document.getElementById("resistorBox");
 
-<div id="resRes" class="result"></div>
-<div id="stepsRes"></div>
+    function redondear(numero){
+      return parseFloat(numero.toFixed(4));
+    }
 
-</div>
+    function limpiarSalida(){
+      mensajeError.innerHTML = "";
+      resOhm.innerHTML = "";
+      stepsOhm.innerHTML = `<div class="step">Aquí aparecerá el desarrollo.</div>`;
+    }
 
-</div>
+    function actualizarInputs(){
+      const t = tipo.value;
 
-</div>
+      v.style.display = "block";
+      i.style.display = "block";
+      r.style.display = "block";
 
-<script>
+      v.value = "";
+      i.value = "";
+      r.value = "";
 
-function mostrar(id){
-document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      if(t === "R"){
+        r.style.display = "none";
+      }
 
-document.getElementById(id).classList.add('active');
-event.target.classList.add('active');
-}
+      if(t === "I"){
+        i.style.display = "none";
+      }
 
-function calcOhm(){
-let t=tipo.value;
-let V=parseFloat(v.value);
-let I=parseFloat(i.value);
-let R=parseFloat(r.value);
+      if(t === "V"){
+        v.style.display = "none";
+      }
 
-let res="";
-let steps="";
+      actualizarPlaceholders();
+      limpiarSalida();
+      actualizarCircuito();
+    }
 
-if(t=="I"){
-let x=V/R;
-res="I = "+x+" A";
-steps=`<div class="step"><b>1.</b> I=V/R</div><div class="step"><b>2.</b> ${V}/${R}</div><div class="step"><b>3.</b> ${x}</div>`;
-}
+    function actualizarPlaceholders(){
+      const t = tipo.value;
 
-if(t=="V"){
-let x=I*R;
-res="V = "+x+" V";
-steps=`<div class="step"><b>1.</b> V=I×R</div><div class="step"><b>2.</b> ${I}×${R}</div><div class="step"><b>3.</b> ${x}</div>`;
-}
+      v.placeholder = "Voltaje (V)";
+      i.placeholder = "Corriente (I)";
+      r.placeholder = "Resistencia (R)";
 
-if(t=="R"){
-let x=V/I;
-res="R = "+x+" Ω";
-steps=`<div class="step"><b>1.</b> R=V/I</div><div class="step"><b>2.</b> ${V}/${I}</div><div class="step"><b>3.</b> ${x}</div>`;
-}
+      if(t === "R"){
+        v.placeholder = "Ingresa Voltaje (V)";
+        i.placeholder = "Ingresa Corriente (I)";
+      }
 
-resOhm.innerHTML=res;
-stepsOhm.innerHTML=steps;
-}
+      if(t === "I"){
+        v.placeholder = "Ingresa Voltaje (V)";
+        r.placeholder = "Ingresa Resistencia (R)";
+      }
 
-function calcRes(){
-let t=tipoR.value;
-let R1=parseFloat(r1.value);
-let R2=parseFloat(r2.value);
+      if(t === "V"){
+        i.placeholder = "Ingresa Corriente (I)";
+        r.placeholder = "Ingresa Resistencia (R)";
+      }
+    }
 
-let res="";
-let steps="";
+    function actualizarCircuito(){
+      tagV.innerHTML = v.value !== "" ? `V = ${v.value} V` : "V = ?";
+      tagI.innerHTML = i.value !== "" ? `I = ${i.value} A` : "I = ?";
+      tagR.innerHTML = r.value !== "" ? `R = ${r.value} Ω` : "R = ? Ω";
+      resistorBox.innerHTML = r.value !== "" ? `R = ${r.value} Ω` : "R = ? Ω";
+    }
 
-if(t=="serie"){
-let x=R1+R2;
-res="R = "+x+" Ω";
-steps=`<div class="step"><b>1.</b> R=R1+R2</div><div class="step"><b>2.</b> ${R1}+${R2}</div><div class="step"><b>3.</b> ${x}</div>`;
-}
+    function mostrarError(texto){
+      mensajeError.innerHTML = texto;
+      resOhm.innerHTML = "";
+      stepsOhm.innerHTML = `<div class="step">${texto}</div>`;
+    }
 
-if(t=="paralelo"){
-let x=1/(1/R1+1/R2);
-res="R = "+x+" Ω";
-steps=`<div class="step"><b>1.</b> 1/R=1/R1+1/R2</div><div class="step"><b>2.</b> 1/${R1}+1/${R2}</div><div class="step"><b>3.</b> ${x}</div>`;
-}
+    function calcOhm(){
+      const t = tipo.value;
+      const V = parseFloat(v.value);
+      const I = parseFloat(i.value);
+      const R = parseFloat(r.value);
 
-resRes.innerHTML=res;
-stepsRes.innerHTML=steps;
-}
+      mensajeError.innerHTML = "";
+      resOhm.innerHTML = "";
 
-</script>
+      if(t === "R"){
+        if(isNaN(V) || isNaN(I)){
+          mostrarError("Ingresa voltaje y corriente.");
+          return;
+        }
+
+        if(I === 0){
+          mostrarError("La corriente no puede ser 0.");
+          return;
+        }
+
+        const x = redondear(V / I);
+
+        r.value = x;
+        resOhm.innerHTML = `R = ${x} Ω`;
+        stepsOhm.innerHTML = `
+          <div class="step">R = V / I</div>
+          <div class="step">R = ${V} / ${I}</div>
+          <div class="step">R = ${x} Ω</div>
+        `;
+      }
+
+      if(t === "I"){
+        if(isNaN(V) || isNaN(R)){
+          mostrarError("Ingresa voltaje y resistencia.");
+          return;
+        }
+
+        if(R === 0){
+          mostrarError("La resistencia no puede ser 0.");
+          return;
+        }
+
+        const x = redondear(V / R);
+
+        i.value = x;
+        resOhm.innerHTML = `I = ${x} A`;
+        stepsOhm.innerHTML = `
+          <div class="step">I = V / R</div>
+          <div class="step">I = ${V} / ${R}</div>
+          <div class="step">I = ${x} A</div>
+        `;
+      }
+
+      if(t === "V"){
+        if(isNaN(I) || isNaN(R)){
+          mostrarError("Ingresa corriente y resistencia.");
+          return;
+        }
+
+        const x = redondear(I * R);
+
+        v.value = x;
+        resOhm.innerHTML = `V = ${x} V`;
+        stepsOhm.innerHTML = `
+          <div class="step">V = I × R</div>
+          <div class="step">V = ${I} × ${R}</div>
+          <div class="step">V = ${x} V</div>
+        `;
+      }
+
+      actualizarCircuito();
+    }
+
+    actualizarInputs();
+  </script>
 
 </body>
 </html>
