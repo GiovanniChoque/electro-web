@@ -225,114 +225,63 @@
       padding:22px;
     }
 
+    /* CIRCUITO NUEVO */
     .circuito-box{
       position:relative;
-      height:470px;
+      height:360px;
       border-radius:24px;
       background:
-        radial-gradient(circle at 30% 20%, rgba(56,189,248,.15), transparent 30%),
-        radial-gradient(circle at 80% 80%, rgba(168,85,247,.18), transparent 30%),
-        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+        radial-gradient(circle at 30% 20%, rgba(56,189,248,.12), transparent 30%),
+        radial-gradient(circle at 80% 80%, rgba(168,85,247,.12), transparent 30%),
+        linear-gradient(180deg, rgba(15,23,42,.95), rgba(2,6,23,.95));
       overflow:hidden;
+      border:1px solid rgba(255,255,255,0.06);
     }
 
-    .wire{
-      position:absolute;
-      background:#94a3b8;
-      box-shadow:0 0 10px rgba(148,163,184,.25);
+    .wire-static{
+      stroke:#94a3b8;
+      stroke-width:4;
+      fill:none;
+      stroke-linecap:round;
+      stroke-linejoin:round;
     }
 
-    .wire.h{ height:6px; border-radius:999px; }
-    .wire.v{ width:6px; border-radius:999px; }
-
-    .nodo{
-      position:absolute;
-      width:16px;
-      height:16px;
-      border-radius:50%;
-      background:#e2e8f0;
-      box-shadow:0 0 14px rgba(255,255,255,.35);
+    .resistor-path{
+      stroke:#f8fafc;
+      stroke-width:4;
+      fill:none;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+      transition:filter 0.3s ease;
     }
 
-    .resistor{
-      position:absolute;
-      width:150px;
-      height:56px;
-      left:50%;
-      top:106px;
-      transform:translateX(-50%);
-      background:#f8fafc;
-      color:#111827;
-      border-radius:14px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:800;
-      box-shadow:0 10px 20px rgba(0,0,0,.25);
-      border:3px solid #cbd5e1;
-      z-index:2;
+    #electron{
+      filter: drop-shadow(0 0 6px #38bdf8) brightness(1.2);
     }
 
-    .battery{
-      position:absolute;
-      left:100px;
-      top:180px;
-      width:72px;
-      height:118px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+    .battery-big{
+      stroke:white;
+      stroke-width:4;
+      stroke-linecap:round;
     }
 
-    .battery .long{
-      position:absolute;
-      width:8px;
-      height:86px;
-      background:#f8fafc;
-      left:20px;
-      border-radius:8px;
+    .battery-small{
+      stroke:white;
+      stroke-width:4;
+      stroke-linecap:round;
     }
 
-    .battery .short{
-      position:absolute;
-      width:8px;
-      height:52px;
-      background:#f8fafc;
-      left:42px;
-      border-radius:8px;
+    .amp-circle{
+      fill:rgba(255,255,255,0.03);
+      stroke:white;
+      stroke-width:3;
     }
 
-    .battery .plus{
-      position:absolute;
-      top:-8px;
-      left:10px;
-      font-weight:800;
-      font-size:18px;
-    }
-
-    .battery .minus{
-      position:absolute;
-      bottom:-8px;
-      left:41px;
-      font-weight:800;
-      font-size:18px;
-    }
-
-    .amperimetro{
-      position:absolute;
-      right:96px;
-      top:218px;
-      width:92px;
-      height:92px;
-      border-radius:50%;
-      border:4px solid #e2e8f0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:800;
-      font-size:28px;
-      color:#fff;
-      background:rgba(255,255,255,.06);
+    .amp-text{
+      fill:white;
+      font-size:22px;
+      font-weight:bold;
+      font-family:'Segoe UI', sans-serif;
     }
 
     .tag{
@@ -341,15 +290,15 @@
       border-radius:999px;
       font-size:14px;
       font-weight:700;
-      background:rgba(255,255,255,.09);
-      border:1px solid rgba(255,255,255,.08);
+      background:rgba(15,23,42,0.85);
+      border:1px solid rgba(56,189,248,0.45);
       color:#fff;
       backdrop-filter: blur(6px);
     }
 
-    .tag.v{ left:72px; top:320px; }
-    .tag.r{ left:50%; top:36px; transform:translateX(-50%); }
-    .tag.i{ right:78px; top:322px; }
+    .tag.v{ left:20px; bottom:18px; }
+    .tag.r{ left:50%; top:14px; transform:translateX(-50%); }
+    .tag.i{ right:20px; bottom:18px; }
 
     .mini-ayuda{
       margin-top:18px;
@@ -365,7 +314,7 @@
       }
 
       .circuito-box{
-        height:420px;
+        height:320px;
       }
     }
 
@@ -375,32 +324,8 @@
       }
 
       .circuito-box{
-        height:360px;
+        height:280px;
       }
-
-      .resistor{
-        width:120px;
-        height:48px;
-        top:92px;
-      }
-
-      .battery{
-        left:48px;
-        top:160px;
-        transform:scale(.9);
-      }
-
-      .amperimetro{
-        right:44px;
-        top:210px;
-        width:78px;
-        height:78px;
-        font-size:24px;
-      }
-
-      .tag.v{ left:26px; top:298px; }
-      .tag.i{ right:18px; top:298px; }
-      .tag.r{ top:28px; }
     }
   </style>
 </head>
@@ -468,33 +393,34 @@
         <h2>Circuito visual</h2>
 
         <div class="circuito-box">
-          <!-- cables -->
-          <div class="wire h" style="left:110px; top:128px; width:255px;"></div>
-          <div class="wire h" style="left:505px; top:128px; width:120px;"></div>
+          <svg viewBox="0 0 500 300" style="width:100%; height:100%">
+            
+            <!-- recorrido -->
+            <path id="fullPath" d="M 100 150 L 100 70 L 190 70 L 210 50 L 230 90 L 250 50 L 270 90 L 290 50 L 310 90 L 330 70 L 400 70 L 400 230 L 100 230 L 100 150" fill="none"/>
 
-          <div class="wire v" style="left:107px; top:128px; height:160px;"></div>
-          <div class="wire h" style="left:107px; top:286px; width:520px;"></div>
-          <div class="wire v" style="left:624px; top:128px; height:160px;"></div>
+            <!-- cables -->
+            <path class="wire-static" d="M 100 150 L 100 70 L 190 70" />
+            <path class="wire-static" d="M 330 70 L 400 70 L 400 230 L 100 230 L 100 150" />
 
-          <!-- nodos -->
-          <div class="nodo" style="left:101px; top:123px;"></div>
-          <div class="nodo" style="left:619px; top:123px;"></div>
-          <div class="nodo" style="left:101px; top:281px;"></div>
-          <div class="nodo" style="left:619px; top:281px;"></div>
+            <!-- resistencia -->
+            <polyline class="resistor-path" id="visualR"
+              points="190,70 210,50 230,90 250,50 270,90 290,50 310,90 330,70" />
 
-          <!-- resistor -->
-          <div class="resistor" id="resistorBox">R = ? Ω</div>
+            <!-- batería -->
+            <line x1="82" y1="138" x2="118" y2="138" class="battery-big"/>
+            <line x1="90" y1="162" x2="110" y2="162" class="battery-small"/>
 
-          <!-- batería -->
-          <div class="battery">
-            <div class="long"></div>
-            <div class="short"></div>
-            <div class="plus">+</div>
-            <div class="minus">−</div>
-          </div>
+            <!-- amperímetro -->
+            <circle cx="400" cy="150" r="28" class="amp-circle"/>
+            <text x="400" y="158" text-anchor="middle" class="amp-text">A</text>
 
-          <!-- amperímetro -->
-          <div class="amperimetro">A</div>
+            <!-- electrón -->
+            <circle id="electron" r="5" fill="#38bdf8">
+              <animateMotion id="anim" dur="0s" repeatCount="indefinite">
+                <mpath href="#fullPath"/>
+              </animateMotion>
+            </circle>
+          </svg>
 
           <!-- etiquetas -->
           <div class="tag r" id="tagR">R = ? Ω</div>
@@ -525,7 +451,6 @@
     const tagV = document.getElementById("tagV");
     const tagI = document.getElementById("tagI");
     const tagR = document.getElementById("tagR");
-    const resistorBox = document.getElementById("resistorBox");
 
     function redondear(numero){
       return parseFloat(numero.toFixed(4));
@@ -588,11 +513,36 @@
       }
     }
 
+    function moverElectrones(corriente){
+      const anim = document.getElementById("anim");
+      const visualR = document.getElementById("visualR");
+
+      if(isNaN(corriente) || corriente <= 0){
+        anim.setAttribute("dur","0s");
+        visualR.style.filter="none";
+      }else{
+        let velocidad = 5 / corriente;
+
+        if(velocidad < 0.2) velocidad = 0.2;
+        if(velocidad > 6) velocidad = 6;
+
+        anim.setAttribute("dur", velocidad + "s");
+
+        let brillo = Math.min(corriente * 3, 18);
+        visualR.style.filter = `drop-shadow(0 0 ${brillo}px #38bdf8)`;
+      }
+    }
+
     function actualizarCircuito(){
+      const V = parseFloat(v.value);
+      const I = parseFloat(i.value);
+      const R = parseFloat(r.value);
+
       tagV.innerHTML = v.value !== "" ? `V = ${v.value} V` : "V = ?";
       tagI.innerHTML = i.value !== "" ? `I = ${i.value} A` : "I = ?";
       tagR.innerHTML = r.value !== "" ? `R = ${r.value} Ω` : "R = ? Ω";
-      resistorBox.innerHTML = r.value !== "" ? `R = ${r.value} Ω` : "R = ? Ω";
+
+      moverElectrones(I);
     }
 
     function mostrarError(texto){
