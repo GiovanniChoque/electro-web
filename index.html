@@ -1,67 +1,142 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Electrónica Fácil</title>
+    <title>Ley de Ohm Pro</title>
+
     <style>
         body{
             font-family: Arial;
-            text-align: center;
-            background-color: #0f172a;
+            background: #0f172a;
             color: white;
+            text-align: center;
         }
-        h1{
-            color: #38bdf8;
+
+        .container{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            margin-top: 50px;
         }
+
         .box{
             background: #1e293b;
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 15px;
             width: 300px;
-            margin: auto;
         }
-        input{
-            padding: 5px;
+
+        img{
+            width: 200px;
+            border-radius: 10px;
+        }
+
+        input, select{
+            padding: 8px;
             margin: 5px;
+            width: 80%;
         }
+
         button{
             padding: 10px;
             background: #38bdf8;
             border: none;
-            color: black;
             cursor: pointer;
+        }
+
+        #proceso{
+            margin-top: 20px;
+            text-align: left;
         }
     </style>
 </head>
 
 <body>
 
-<h1>🔌 Aprende Electrónica y Arduino</h1>
+<h1>🔌 Calculadora Ley de Ohm</h1>
 
-<div class="box">
-    <h2>Calculadora Ley de Ohm</h2>
+<div class="container">
 
-    Voltaje (V): <br>
-    <input id="V"><br>
+    <!-- IMAGEN -->
+    <div>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Ohm%27s_Law_Pie_chart.svg/512px-Ohm%27s_Law_Pie_chart.svg.png">
+    </div>
 
-    Resistencia (Ω): <br>
-    <input id="R"><br>
+    <!-- CALCULADORA -->
+    <div class="box">
 
-    <button onclick="calc()">Calcular</button>
+        <h3>¿Qué deseas calcular?</h3>
 
-    <p id="res"></p>
+        <select id="tipo">
+            <option value="I">Corriente (I)</option>
+            <option value="V">Voltaje (V)</option>
+            <option value="R">Resistencia (R)</option>
+        </select>
+
+        <br>
+
+        <input id="v" placeholder="Voltaje (V)">
+        <input id="i" placeholder="Corriente (I)">
+        <input id="r" placeholder="Resistencia (Ω)">
+
+        <br>
+
+        <button onclick="calcular()">Calcular</button>
+
+        <h3 id="resultado"></h3>
+
+        <div id="proceso"></div>
+
+    </div>
+
 </div>
 
 <script>
-function calc(){
-    let V = document.getElementById("V").value;
-    let R = document.getElementById("R").value;
+function calcular(){
 
-    if(R == 0){
-        document.getElementById("res").innerHTML = "Error: R no puede ser 0";
-    } else {
-        let I = V / R;
-        document.getElementById("res").innerHTML = "Corriente = " + I + " A";
+    let tipo = document.getElementById("tipo").value;
+    let V = parseFloat(document.getElementById("v").value);
+    let I = parseFloat(document.getElementById("i").value);
+    let R = parseFloat(document.getElementById("r").value);
+
+    let resultado = "";
+    let proceso = "";
+
+    if(tipo == "I"){
+        let res = V / R;
+        resultado = "Corriente = " + res + " A";
+
+        proceso = `
+        <b>Fórmula:</b> I = V / R <br>
+        <b>Reemplazamos:</b> I = ${V} / ${R} <br>
+        <b>Resultado:</b> I = ${res} A
+        `;
     }
+
+    if(tipo == "V"){
+        let res = I * R;
+        resultado = "Voltaje = " + res + " V";
+
+        proceso = `
+        <b>Fórmula:</b> V = I × R <br>
+        <b>Reemplazamos:</b> V = ${I} × ${R} <br>
+        <b>Resultado:</b> V = ${res} V
+        `;
+    }
+
+    if(tipo == "R"){
+        let res = V / I;
+        resultado = "Resistencia = " + res + " Ω";
+
+        proceso = `
+        <b>Fórmula:</b> R = V / I <br>
+        <b>Reemplazamos:</b> R = ${V} / ${I} <br>
+        <b>Resultado:</b> R = ${res} Ω
+        `;
+    }
+
+    document.getElementById("resultado").innerHTML = resultado;
+    document.getElementById("proceso").innerHTML = proceso;
 }
 </script>
 
