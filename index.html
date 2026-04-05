@@ -1,221 +1,300 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Ohm App</title>
+<title>Electro App</title>
 
-    <style>
-        body{
-            margin:0;
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
+<style>
+body{
+    margin:0;
+    font-family:'Segoe UI', sans-serif;
+    background: radial-gradient(circle at 20% 30%, #6366f1, transparent 40%),
+                radial-gradient(circle at 80% 70%, #ec4899, transparent 40%),
+                linear-gradient(135deg,#0f172a,#1e293b);
+    color:white;
+    overflow-x:hidden;
+}
 
-        header{
-            text-align:center;
-            padding:20px;
-            font-size:24px;
-            font-weight:bold;
-        }
+/* EFECTOS DE LUZ */
+.glow{
+    position:absolute;
+    width:300px;
+    height:300px;
+    background: radial-gradient(circle, rgba(255,255,255,0.2), transparent 70%);
+    filter: blur(60px);
+    z-index:0;
+}
 
-        .app{
-            display:flex;
-            justify-content:center;
-            padding:20px;
-        }
+.glow1{ top:50px; left:50px; }
+.glow2{ bottom:50px; right:50px; }
 
-        .container{
-            background:white;
-            color:black;
-            width:350px;
-            border-radius:20px;
-            padding:20px;
-            box-shadow:0 15px 40px rgba(0,0,0,0.3);
-        }
+header{
+    text-align:center;
+    padding:20px;
+    font-size:24px;
+    font-weight:bold;
+    position:relative;
+    z-index:1;
+}
 
-        .title{
-            text-align:center;
-            font-size:20px;
-            font-weight:bold;
-            margin-bottom:10px;
-        }
+.container{
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
+    position:relative;
+    z-index:1;
+}
 
-        img{
-            width:100%;
-            border-radius:10px;
-        }
+.tabs{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:20px;
+}
 
-        .formulas{
-            display:flex;
-            justify-content:space-around;
-            margin-top:10px;
-        }
+.tab{
+    padding:10px 20px;
+    border-radius:20px;
+    background:rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    cursor:pointer;
+}
 
-        .formula{
-            background:#f1f5f9;
-            padding:8px;
-            border-radius:10px;
-            font-weight:bold;
-        }
+.tab.active{
+    background:white;
+    color:black;
+}
 
-        select, input{
-            width:100%;
-            padding:12px;
-            margin-top:10px;
-            border-radius:10px;
-            border:none;
-            background:#f1f5f9;
-        }
+.section{
+    display:none;
+}
 
-        button{
-            width:100%;
-            padding:12px;
-            margin-top:15px;
-            border:none;
-            border-radius:12px;
-            background: linear-gradient(135deg,#ff7a18,#ffb347);
-            color:white;
-            font-weight:bold;
-            cursor:pointer;
-            transition:0.3s;
-        }
+.section.active{
+    display:block;
+}
 
-        button:hover{
-            transform:scale(1.05);
-        }
+/* LAYOUT */
+.row{
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+}
 
-        .result{
-            margin-top:15px;
-            padding:15px;
-            border-radius:10px;
-            background:#e0f2fe;
-            text-align:center;
-            font-weight:bold;
-        }
+/* INFO GLASS */
+.left{
+    flex:1;
+    min-width:250px;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px);
+    padding:20px;
+    border-radius:20px;
+    border:1px solid rgba(255,255,255,0.1);
+}
 
-        .steps{
-            margin-top:10px;
-        }
+/* CALCULADORA BLANCA */
+.right{
+    flex:1;
+    min-width:280px;
+    background:white;
+    color:black;
+    padding:20px;
+    border-radius:20px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.6);
+}
 
-        .step{
-            background:#f8fafc;
-            padding:10px;
-            border-radius:8px;
-            margin-top:5px;
-            font-size:14px;
-        }
+/* INPUTS */
+input,select{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border-radius:10px;
+    border:none;
+    background:#f1f5f9;
+}
 
-        .step b{
-            color:#6366f1;
-        }
+/* BOTÓN */
+button{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#ff7a18,#ffb347);
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
 
-    </style>
+button:hover{
+    transform:scale(1.05);
+}
+
+/* RESULTADO */
+.result{
+    margin-top:10px;
+    padding:12px;
+    border-radius:10px;
+    background:#e0f2fe;
+    text-align:center;
+    font-weight:bold;
+}
+
+/* PASOS */
+.step{
+    background:#f8fafc;
+    padding:10px;
+    border-radius:8px;
+    margin-top:6px;
+    font-size:14px;
+}
+
+.step b{
+    color:#6366f1;
+}
+</style>
+
 </head>
 
 <body>
 
-<header>⚡ Ohm Calculator App</header>
+<div class="glow glow1"></div>
+<div class="glow glow2"></div>
 
-<div class="app">
-    <div class="container">
+<header>⚡ Electro App</header>
 
-        <div class="title">Ley de Ohm</div>
+<div class="container">
 
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Ohm%27s_Law_Pie_chart.svg/512px-Ohm%27s_Law_Pie_chart.svg.png">
+<div class="tabs">
+<div class="tab active" onclick="mostrar('ohm')">Ley de Ohm</div>
+<div class="tab" onclick="mostrar('res')">Resistencias</div>
+</div>
 
-        <div class="formulas">
-            <div class="formula">V = I × R</div>
-            <div class="formula">I = V / R</div>
-            <div class="formula">R = V / I</div>
-        </div>
+<!-- OHM -->
+<div id="ohm" class="section active">
 
-        <select id="tipo">
-            <option value="I">Corriente</option>
-            <option value="V">Voltaje</option>
-            <option value="R">Resistencia</option>
-        </select>
+<div class="row">
 
-        <input id="v" placeholder="Voltaje (V)">
-        <input id="i" placeholder="Corriente (A)">
-        <input id="r" placeholder="Resistencia (Ω)">
+<div class="left">
+<h3>¿Qué es?</h3>
+<p>La Ley de Ohm relaciona voltaje, corriente y resistencia.</p>
 
-        <button onclick="calcular()">Calcular</button>
+<h3>¿Para qué sirve?</h3>
+<p>Permite analizar circuitos eléctricos.</p>
 
-        <div class="result" id="resultado"></div>
+<h3>Autor</h3>
+<p>:contentReference[oaicite:0]{index=0}</p>
+</div>
 
-        <div class="steps" id="proceso"></div>
+<div class="right">
 
-    </div>
+<select id="tipo">
+<option value="I">Corriente</option>
+<option value="V">Voltaje</option>
+<option value="R">Resistencia</option>
+</select>
+
+<input id="v" placeholder="Voltaje">
+<input id="i" placeholder="Corriente">
+<input id="r" placeholder="Resistencia">
+
+<button onclick="calcOhm()">Calcular</button>
+
+<div id="resOhm" class="result"></div>
+<div id="stepsOhm"></div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- RESISTENCIAS -->
+<div id="res" class="section">
+
+<div class="right">
+
+<select id="tipoR">
+<option value="serie">Serie</option>
+<option value="paralelo">Paralelo</option>
+</select>
+
+<input id="r1" placeholder="R1">
+<input id="r2" placeholder="R2">
+
+<button onclick="calcRes()">Calcular</button>
+
+<div id="resRes" class="result"></div>
+<div id="stepsRes"></div>
+
+</div>
+
+</div>
+
 </div>
 
 <script>
 
-document.getElementById("tipo").addEventListener("change", function(){
+function mostrar(id){
+document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
 
-    let t=this.value;
+document.getElementById(id).classList.add('active');
+event.target.classList.add('active');
+}
 
-    v.style.display="block";
-    i.style.display="block";
-    r.style.display="block";
+function calcOhm(){
+let t=tipo.value;
+let V=parseFloat(v.value);
+let I=parseFloat(i.value);
+let R=parseFloat(r.value);
 
-    if(t=="I") i.style.display="none";
-    if(t=="V") v.style.display="none";
-    if(t=="R") r.style.display="none";
+let res="";
+let steps="";
 
-});
+if(t=="I"){
+let x=V/R;
+res="I = "+x+" A";
+steps=`<div class="step"><b>1.</b> I=V/R</div><div class="step"><b>2.</b> ${V}/${R}</div><div class="step"><b>3.</b> ${x}</div>`;
+}
 
-function calcular(){
+if(t=="V"){
+let x=I*R;
+res="V = "+x+" V";
+steps=`<div class="step"><b>1.</b> V=I×R</div><div class="step"><b>2.</b> ${I}×${R}</div><div class="step"><b>3.</b> ${x}</div>`;
+}
 
-    let t=tipo.value;
-    let V=parseFloat(v.value);
-    let I=parseFloat(i.value);
-    let R=parseFloat(r.value);
+if(t=="R"){
+let x=V/I;
+res="R = "+x+" Ω";
+steps=`<div class="step"><b>1.</b> R=V/I</div><div class="step"><b>2.</b> ${V}/${I}</div><div class="step"><b>3.</b> ${x}</div>`;
+}
 
-    let res="";
-    let steps="";
+resOhm.innerHTML=res;
+stepsOhm.innerHTML=steps;
+}
 
-    if(t=="I"){
-        if(isNaN(V)||isNaN(R)){res="⚠️ Ingresa V y R";return;}
-        let x=V/R;
+function calcRes(){
+let t=tipoR.value;
+let R1=parseFloat(r1.value);
+let R2=parseFloat(r2.value);
 
-        res="Corriente = "+x+" A";
+let res="";
+let steps="";
 
-        steps=`
-        <div class="step"><b>1.</b> I = V / R</div>
-        <div class="step"><b>2.</b> I = ${V} / ${R}</div>
-        <div class="step"><b>3.</b> I = ${x} A</div>
-        `;
-    }
+if(t=="serie"){
+let x=R1+R2;
+res="R = "+x+" Ω";
+steps=`<div class="step"><b>1.</b> R=R1+R2</div><div class="step"><b>2.</b> ${R1}+${R2}</div><div class="step"><b>3.</b> ${x}</div>`;
+}
 
-    if(t=="V"){
-        if(isNaN(I)||isNaN(R)){res="⚠️ Ingresa I y R";return;}
-        let x=I*R;
+if(t=="paralelo"){
+let x=1/(1/R1+1/R2);
+res="R = "+x+" Ω";
+steps=`<div class="step"><b>1.</b> 1/R=1/R1+1/R2</div><div class="step"><b>2.</b> 1/${R1}+1/${R2}</div><div class="step"><b>3.</b> ${x}</div>`;
+}
 
-        res="Voltaje = "+x+" V";
-
-        steps=`
-        <div class="step"><b>1.</b> V = I × R</div>
-        <div class="step"><b>2.</b> V = ${I} × ${R}</div>
-        <div class="step"><b>3.</b> V = ${x} V</div>
-        `;
-    }
-
-    if(t=="R"){
-        if(isNaN(V)||isNaN(I)){res="⚠️ Ingresa V e I";return;}
-        let x=V/I;
-
-        res="Resistencia = "+x+" Ω";
-
-        steps=`
-        <div class="step"><b>1.</b> R = V / I</div>
-        <div class="step"><b>2.</b> R = ${V} / ${I}</div>
-        <div class="step"><b>3.</b> R = ${x} Ω</div>
-        `;
-    }
-
-    resultado.innerHTML=res;
-    proceso.innerHTML=steps;
-
+resRes.innerHTML=res;
+stepsRes.innerHTML=steps;
 }
 
 </script>
