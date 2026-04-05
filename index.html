@@ -1,143 +1,223 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Ley de Ohm Pro</title>
+    <title>Ohm App</title>
 
     <style>
         body{
-            font-family: Arial;
-            background: #0f172a;
+            margin:0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
-            text-align: center;
+        }
+
+        header{
+            text-align:center;
+            padding:20px;
+            font-size:24px;
+            font-weight:bold;
+        }
+
+        .app{
+            display:flex;
+            justify-content:center;
+            padding:20px;
         }
 
         .container{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 40px;
-            margin-top: 50px;
+            background:white;
+            color:black;
+            width:350px;
+            border-radius:20px;
+            padding:20px;
+            box-shadow:0 15px 40px rgba(0,0,0,0.3);
         }
 
-        .box{
-            background: #1e293b;
-            padding: 20px;
-            border-radius: 15px;
-            width: 300px;
+        .title{
+            text-align:center;
+            font-size:20px;
+            font-weight:bold;
+            margin-bottom:10px;
         }
 
         img{
-            width: 200px;
-            border-radius: 10px;
+            width:100%;
+            border-radius:10px;
         }
 
-        input, select{
-            padding: 8px;
-            margin: 5px;
-            width: 80%;
+        .formulas{
+            display:flex;
+            justify-content:space-around;
+            margin-top:10px;
+        }
+
+        .formula{
+            background:#f1f5f9;
+            padding:8px;
+            border-radius:10px;
+            font-weight:bold;
+        }
+
+        select, input{
+            width:100%;
+            padding:12px;
+            margin-top:10px;
+            border-radius:10px;
+            border:none;
+            background:#f1f5f9;
         }
 
         button{
-            padding: 10px;
-            background: #38bdf8;
-            border: none;
-            cursor: pointer;
+            width:100%;
+            padding:12px;
+            margin-top:15px;
+            border:none;
+            border-radius:12px;
+            background: linear-gradient(135deg,#ff7a18,#ffb347);
+            color:white;
+            font-weight:bold;
+            cursor:pointer;
+            transition:0.3s;
         }
 
-        #proceso{
-            margin-top: 20px;
-            text-align: left;
+        button:hover{
+            transform:scale(1.05);
         }
+
+        .result{
+            margin-top:15px;
+            padding:15px;
+            border-radius:10px;
+            background:#e0f2fe;
+            text-align:center;
+            font-weight:bold;
+        }
+
+        .steps{
+            margin-top:10px;
+        }
+
+        .step{
+            background:#f8fafc;
+            padding:10px;
+            border-radius:8px;
+            margin-top:5px;
+            font-size:14px;
+        }
+
+        .step b{
+            color:#6366f1;
+        }
+
     </style>
 </head>
 
 <body>
 
-<h1>🔌 Calculadora Ley de Ohm</h1>
+<header>⚡ Ohm Calculator App</header>
 
-<div class="container">
+<div class="app">
+    <div class="container">
 
-    <!-- IMAGEN -->
-    <div>
+        <div class="title">Ley de Ohm</div>
+
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Ohm%27s_Law_Pie_chart.svg/512px-Ohm%27s_Law_Pie_chart.svg.png">
-    </div>
 
-    <!-- CALCULADORA -->
-    <div class="box">
-
-        <h3>¿Qué deseas calcular?</h3>
+        <div class="formulas">
+            <div class="formula">V = I × R</div>
+            <div class="formula">I = V / R</div>
+            <div class="formula">R = V / I</div>
+        </div>
 
         <select id="tipo">
-            <option value="I">Corriente (I)</option>
-            <option value="V">Voltaje (V)</option>
-            <option value="R">Resistencia (R)</option>
+            <option value="I">Corriente</option>
+            <option value="V">Voltaje</option>
+            <option value="R">Resistencia</option>
         </select>
 
-        <br>
-
         <input id="v" placeholder="Voltaje (V)">
-        <input id="i" placeholder="Corriente (I)">
+        <input id="i" placeholder="Corriente (A)">
         <input id="r" placeholder="Resistencia (Ω)">
-
-        <br>
 
         <button onclick="calcular()">Calcular</button>
 
-        <h3 id="resultado"></h3>
+        <div class="result" id="resultado"></div>
 
-        <div id="proceso"></div>
+        <div class="steps" id="proceso"></div>
 
     </div>
-
 </div>
 
 <script>
+
+document.getElementById("tipo").addEventListener("change", function(){
+
+    let t=this.value;
+
+    v.style.display="block";
+    i.style.display="block";
+    r.style.display="block";
+
+    if(t=="I") i.style.display="none";
+    if(t=="V") v.style.display="none";
+    if(t=="R") r.style.display="none";
+
+});
+
 function calcular(){
 
-    let tipo = document.getElementById("tipo").value;
-    let V = parseFloat(document.getElementById("v").value);
-    let I = parseFloat(document.getElementById("i").value);
-    let R = parseFloat(document.getElementById("r").value);
+    let t=tipo.value;
+    let V=parseFloat(v.value);
+    let I=parseFloat(i.value);
+    let R=parseFloat(r.value);
 
-    let resultado = "";
-    let proceso = "";
+    let res="";
+    let steps="";
 
-    if(tipo == "I"){
-        let res = V / R;
-        resultado = "Corriente = " + res + " A";
+    if(t=="I"){
+        if(isNaN(V)||isNaN(R)){res="⚠️ Ingresa V y R";return;}
+        let x=V/R;
 
-        proceso = `
-        <b>Fórmula:</b> I = V / R <br>
-        <b>Reemplazamos:</b> I = ${V} / ${R} <br>
-        <b>Resultado:</b> I = ${res} A
+        res="Corriente = "+x+" A";
+
+        steps=`
+        <div class="step"><b>1.</b> I = V / R</div>
+        <div class="step"><b>2.</b> I = ${V} / ${R}</div>
+        <div class="step"><b>3.</b> I = ${x} A</div>
         `;
     }
 
-    if(tipo == "V"){
-        let res = I * R;
-        resultado = "Voltaje = " + res + " V";
+    if(t=="V"){
+        if(isNaN(I)||isNaN(R)){res="⚠️ Ingresa I y R";return;}
+        let x=I*R;
 
-        proceso = `
-        <b>Fórmula:</b> V = I × R <br>
-        <b>Reemplazamos:</b> V = ${I} × ${R} <br>
-        <b>Resultado:</b> V = ${res} V
+        res="Voltaje = "+x+" V";
+
+        steps=`
+        <div class="step"><b>1.</b> V = I × R</div>
+        <div class="step"><b>2.</b> V = ${I} × ${R}</div>
+        <div class="step"><b>3.</b> V = ${x} V</div>
         `;
     }
 
-    if(tipo == "R"){
-        let res = V / I;
-        resultado = "Resistencia = " + res + " Ω";
+    if(t=="R"){
+        if(isNaN(V)||isNaN(I)){res="⚠️ Ingresa V e I";return;}
+        let x=V/I;
 
-        proceso = `
-        <b>Fórmula:</b> R = V / I <br>
-        <b>Reemplazamos:</b> R = ${V} / ${I} <br>
-        <b>Resultado:</b> R = ${res} Ω
+        res="Resistencia = "+x+" Ω";
+
+        steps=`
+        <div class="step"><b>1.</b> R = V / I</div>
+        <div class="step"><b>2.</b> R = ${V} / ${I}</div>
+        <div class="step"><b>3.</b> R = ${x} Ω</div>
         `;
     }
 
-    document.getElementById("resultado").innerHTML = resultado;
-    document.getElementById("proceso").innerHTML = proceso;
+    resultado.innerHTML=res;
+    proceso.innerHTML=steps;
+
 }
+
 </script>
 
 </body>
